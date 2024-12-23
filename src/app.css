@@ -1,0 +1,122 @@
+/* Reset podstawowych stylów */
+body {
+    margin: 0;
+    font-family: 'Roboto', Arial, sans-serif;
+    background-color: #f8f9fa;
+    color: #212529;
+    line-height: 1.5;
+}
+
+/* Ogólne ustawienia */
+h1, h2 {
+    text-align: center;
+    color: #495057;
+}
+
+a {
+    color: #0d6efd;
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+button {
+    background-color: #0d6efd;
+    color: #fff;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1rem;
+}
+
+button:hover {
+    background-color: #0056b3;
+}
+
+/* Formularze */
+form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    width: 100%;
+    max-width: 400px;
+    margin: 20px auto;
+    padding: 20px;
+    background-color: #ffffff;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+label {
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+input, textarea {
+    padding: 10px;
+    border: 1px solid #ced4da;
+    border-radius: 5px;
+    font-size: 1rem;
+}
+
+input:focus, textarea:focus {
+    border-color: #80bdff;
+    outline: none;
+    box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+}
+
+textarea {
+    resize: none;
+}
+
+/* Lista zapisanych gier */
+ul {
+    list-style: none;
+    padding: 0;
+}
+
+ul li {
+    background-color: #ffffff;
+    margin: 10px auto;
+    padding: 15px;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    max-width: 500px;
+}
+
+ul li a {
+    font-weight: bold;
+}
+
+/* Siatka Bingo */
+.grid {
+    display: grid;
+    gap: 10px;
+    max-width: 600px;
+    margin: 20px auto;
+}
+
+.cell {
+    padding: 20px;
+    text-align: center;
+    background: #fff;
+    border: 2px solid #dee2e6;
+    border-radius: 5px;
+    font-weight: bold;
+    font-size: 1.2rem;
+    color: #495057;
+    cursor: pointer;
+    transition: background-color 0.3s, color 0.3s;
+}
+
+.cell:hover {
+    background-color: #0d6efd;
+    color: #fff;
+}
