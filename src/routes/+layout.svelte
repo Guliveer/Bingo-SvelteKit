@@ -1,14 +1,12 @@
 <script>
-    import "../app.css";
-
-    let pageTitle = 'Bingo Game';
+    let pageTitle = 'Bingo Game'; // Made that way for future enhancements
 </script>
 
 <svelte:head>
     <title>{pageTitle}</title>
 </svelte:head>
 
-<slot/>
+<slot />
 
 <footer style="
     text-align: center;

@@ -3,13 +3,13 @@
 
     export let gameConfig;
 
-    let size = gameConfig.size; // Rozmiar planszy
-    let shuffled = [...gameConfig.phrases].sort(() => Math.random() - 0.5).slice(0, size * size); // Losowe rozmieszczenie fraz na planszy
-    let marked = new Set(); // Zaznaczone pola
+    let size = gameConfig.size; // Board size
+    let shuffled = [...gameConfig.phrases].sort(() => Math.random() - 0.5).slice(0, size * size); // Randomly shuffled phrases
+    let marked = new Set(); // Marked cells
     let savedGames = [];
     let hasWon = false;
 
-    // Wczytaj zapisane gry z localStorage
+    // Load saved games from localStorage
     onMount(() => {
         savedGames = JSON.parse(localStorage.getItem('savedGames')) || [];
     });
@@ -25,7 +25,7 @@
     }
 
     function checkWin() {
-        // Sprawdzanie warunków wygranej (wiersze, kolumny, przekątne)
+        // Check rows and columns
         const checkLine = (indices) => indices.every((idx) => marked.has(idx));
         for (let i = 0; i < size; i++) {
             if (
@@ -36,10 +36,10 @@
                 return;
             }
         }
-        // Sprawdzanie przekątnych
+        // Check diagonals
         const diag1 = Array.from({ length: size }, (_, i) => i * size + i);
         const diag2 = Array.from({ length: size }, (_, i) => (i + 1) * size - (i + 1));
-        hasWon = (checkLine(diag1) || checkLine(diag2));
+        hasWon = (checkLine(diag1) || checkLine(diag2)); // If any diagonal is marked - hasWon = true
     }
 
     function saveConfig() {
@@ -50,7 +50,7 @@
             phrases: gameConfig.phrases
         };
 
-        savedGames = [...savedGames, curConfig];
+        savedGames = [curConfig, ...savedGames]; // Add new game to savedGames at the beginning
         localStorage.setItem('savedGames', JSON.stringify(savedGames));
 
         alert('Configuration saved!');

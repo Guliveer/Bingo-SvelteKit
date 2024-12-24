@@ -3,7 +3,7 @@
 
 ### Demo Game
 
-[bingo-sveltekit.vercel.app](https://bingo-sveltekit.vercel.app/game/demo?data=eyJuYW1lIjoiRGVtb0dhbWUiLCJzaXplIjozLCJwaHJhc2VzIjpbImRlbW8xIiwiZGVtbzIiLCJkZW1vMyIsImRlbW80IiwiZGVtbzUiLCJkZW1vNiIsImRlbW83IiwiZGVtbzgiLCJkZW1vOSIsImRlbW8xMCIsImRlbW8xMSJdfQ==)
+[bingo-sveltekit.vercel.app](https://bingo-sveltekit.vercel.app/game/4573eb58-9b31-4015-94dc-f35b9d648c18?data=eyJuYW1lIjoiRGVtb0dhbWUiLCJzaXplIjozLCJwaHJhc2VzIjpbImRlbW8xIiwiZGVtbzIiLCJkZW1vMyIsImRlbW80IiwiZGVtbzUiLCJkZW1vNiIsImRlbW83IiwiZGVtbzgiLCJkZW1vOSIsImRlbW8xMCIsImRlbW8xMSIsImRlbW8xMiJdfQ==)
 
 ## Description
 

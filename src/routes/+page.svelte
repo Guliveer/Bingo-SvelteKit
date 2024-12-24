@@ -8,13 +8,17 @@
     let savedGames = [];
     let errorMessage = '';
 
-    // Wczytaj zapisane gry z localStorage
+    // Load saved games from localStorage
     onMount(() => {
         savedGames = JSON.parse(localStorage.getItem('savedGames')) || [];
     });
 
     function createGame() {
-        const phrases = newGame.phrases.split('\n').filter((p) => p.trim() !== '');
+        const phrases = newGame.phrases
+            .split('\n')
+            .map((p) => p.trim()) // Delete whitespaces
+            .filter((p) => p !== ''); // Filter empty strings
+
         const requiredPhrases = newGame.size * newGame.size;
 
         if (phrases.length < requiredPhrases) {
@@ -25,11 +29,11 @@
         const encoded = encodeGameConfig(id, newGame.size, phrases);
         const gameConfig = { id, name: id, size: newGame.size, phrases };
 
-        // Dodaj nową grę do zapisanych
-        savedGames = [...savedGames, gameConfig];
+        // Add new game to savedGames at the beginning
+        savedGames = [gameConfig, ...savedGames];
         localStorage.setItem('savedGames', JSON.stringify(savedGames));
 
-        // Przejdź do nowej gry
+        // Redirect to the game page
         goto(`/game/${id}?data=${encoded}`);
     }
 
@@ -81,7 +85,6 @@
         <ul>
             {#each savedGames as game}
                 <li>
-                    <!--if game.name does not exist or is empty, then show game.id, else game.name-->
                     {game.name || game.id}
 
                     <div class="actions">

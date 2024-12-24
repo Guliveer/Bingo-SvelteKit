@@ -11,7 +11,7 @@
         const encodedData = params.get('data');
         if (encodedData) {
             try {
-                gameConfig = decodeGameConfig(encodedData); // Dekoduj konfigurację gry
+                gameConfig = decodeGameConfig(encodedData); // Decode game data
             } catch (e) {
                 console.error('Error encoding game data:', e);
                 dataError = true;

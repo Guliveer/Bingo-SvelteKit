@@ -3,15 +3,15 @@
     import { onMount } from 'svelte';
     import { goto } from '$app/navigation';
 
-    let gameId = ''; // ID gry
-    let gameName = ''; // Nazwa gry
-    let size = 3; // Rozmiar planszy
-    let phrases = []; // Hasła gry
+    let gameId = '';
+    let gameName = '';
+    let size = 3;
+    let phrases = [];
     let errorMessage = '';
 
-    $: gameId = page.params.id; // Pobieramy ID gry z parametrów trasy
+    $: gameId = page.params.id; // Game ID from URL
 
-    // Wczytujemy dane gry z `localStorage`
+    // Load game data from localStorage
     onMount(() => {
         const savedGames = JSON.parse(localStorage.getItem('savedGames')) || [];
         const game = savedGames.find((g) => g.id === gameId);
@@ -29,7 +29,7 @@
         const savedGames = JSON.parse(localStorage.getItem('savedGames')) || [];
         const gameIndex = savedGames.findIndex((g) => g.id === gameId);
 
-        if (gameIndex !== -1) {
+        if (gameIndex !== -1) { // If game exists
             savedGames[gameIndex] = { id: gameId, name: gameName, size, phrases };
             localStorage.setItem('savedGames', JSON.stringify(savedGames));
             goto('/');
