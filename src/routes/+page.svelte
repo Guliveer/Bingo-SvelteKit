@@ -1,9 +1,10 @@
 <script>
     import { goto } from '$app/navigation';
-    import {encodeGameConfig, shortenURL} from '$lib/utils';
+    import { encodeGameConfig } from '$lib/utils';
     import { onMount } from 'svelte';
 
-    let newGame = { size: 3, phrases: '' }; // Each phrase in a new line
+    let id = crypto.randomUUID();
+    let newGame = { name: id, size: 3, phrases: '' }; // Each phrase in a new line
     let savedGames = [];
     let errorMessage = '';
 
@@ -21,9 +22,8 @@
             return;
         }
 
-        const encoded = encodeGameConfig(newGame.size, phrases);
-        const id = crypto.randomUUID();
-        const gameConfig = { id, size: newGame.size, phrases };
+        const encoded = encodeGameConfig(id, newGame.size, phrases);
+        const gameConfig = { id, name: id, size: newGame.size, phrases };
 
         // Dodaj nową grę do zapisanych
         savedGames = [...savedGames, gameConfig];
@@ -33,10 +33,13 @@
         goto(`/game/${id}?data=${encoded}`);
     }
 
-    async function shareGame(game) {
-        const target = shortenURL(`${window.location.origin}/game/${game.id}?data=${encodeGameConfig(game.size, game.phrases)}`);
-        await navigator.clipboard.writeText(target);
-        alert('Game URL copied to clipboard!');
+    function copyLink(game) {
+        const url = `${window.location.origin}/game/${game.id}?data=${encodeGameConfig(game.name, game.size, game.phrases)}`;
+
+        // copy to clipboard
+        navigator.clipboard.writeText(url);
+
+        alert('Link copied to clipboard!');
     }
 
     function deleteGame(id) {
@@ -59,7 +62,7 @@
     <form on:submit|preventDefault={createGame}>
         <label>
             Board size:
-            <input bind:value={newGame.size} max="10" min="3" type="number" />
+            <input bind:value={newGame.size} max="9" min="3" step="2" type="number" />
         </label>
         <label>
             Phrases (one per line):
@@ -82,10 +85,10 @@
                     {game.name || game.id}
 
                     <div class="actions">
-                    <button on:click={() => goto(`/game/${game.id}?data=${encodeGameConfig(game.size, game.phrases)}`)}>
+                    <button on:click={() => goto(`/game/${game.id}?data=${encodeGameConfig(game.name, game.size, game.phrases)}`)}>
                             Play
                     </button>
-                    <button on:click={() => shareGame(game)}>Copy Link</button>
+                    <button on:click={() => copyLink(game)}>Copy Link</button>
                     <button on:click={() => editGame(game.id)}>Edit</button>
                     <button on:click={() => deleteGame(game.id)}>Delete</button>
                     </div>

@@ -1,5 +1,5 @@
 <script>
-    import { page } from '$app/stores';
+    import { page } from '$app/state';
     import { onMount } from 'svelte';
     import { goto } from '$app/navigation';
 
@@ -9,7 +9,7 @@
     let phrases = []; // Hasła gry
     let errorMessage = '';
 
-    $: gameId = $page.params.id; // Pobieramy ID gry z parametrów trasy
+    $: gameId = page.params.id; // Pobieramy ID gry z parametrów trasy
 
     // Wczytujemy dane gry z `localStorage`
     onMount(() => {
@@ -55,7 +55,7 @@
     <form on:submit|preventDefault={saveChanges}>
         <label>
             Board size:
-            <input type="number" bind:value={size} min="3" max="10" />
+            <input type="number" bind:value={size} min="3" max="9" step="2" />
         </label>
         <label>
             Custom name:

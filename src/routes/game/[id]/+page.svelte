@@ -1,5 +1,5 @@
 <script>
-    import { page } from '$app/stores';
+    import { page } from '$app/state';
     import { decodeGameConfig } from '$lib/utils';
     import BingoGrid from '$lib/components/BingoGrid.svelte';
 
@@ -7,7 +7,7 @@
     let dataError = false;
 
     $: {
-        const params = new URLSearchParams($page.url.search);
+        const params = new URLSearchParams(page.url.search);
         const encodedData = params.get('data');
         if (encodedData) {
             try {
@@ -20,13 +20,13 @@
             dataError = true;
         }
 
-        console.log(gameConfig);
+        // console.log(gameConfig);
     }
 </script>
 
 {#if dataError}
     <p>Error loading game data.</p>
 {:else}
-    <h1>{gameConfig.name}</h1>
+    <h1>{gameConfig.name || gameConfig.id}</h1>
     <BingoGrid {gameConfig} />
 {/if}

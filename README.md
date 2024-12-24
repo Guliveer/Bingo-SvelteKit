@@ -1,4 +1,9 @@
 # Bingo Game - SvelteKit Project
+[![Vercel](https://vercelbadge.vercel.app/api/guliveer/bingo-sveltekit?style=for-the-badge&logo=vercel)](https://bingo-sveltekit.vercel.app)
+
+### Demo Game
+
+[bingo-sveltekit.vercel.app](https://bingo-sveltekit.vercel.app/game/demo?data=eyJuYW1lIjoiRGVtb0dhbWUiLCJzaXplIjozLCJwaHJhc2VzIjpbImRlbW8xIiwiZGVtbzIiLCJkZW1vMyIsImRlbW80IiwiZGVtbzUiLCJkZW1vNiIsImRlbW83IiwiZGVtbzgiLCJkZW1vOSIsImRlbW8xMCIsImRlbW8xMSJdfQ==)
 
 ## Description
 
@@ -36,4 +41,6 @@ To run the project locally, follow the steps below:
     npm run dev
     ```
 
-You can also host the application on a live server (like [Vercel](https://vercel.com/docs/deployments/git/vercel-for-github) or [Netlify](https://www.netlify.com/blog/2016/09/29/a-step-by-step-guide-deploying-on-netlify/)) by following the deployment instructions for SvelteKit.
+You can also host the application on a live server (like [Vercel](https://vercel.com/docs/deployments/git/vercel-for-github) or [Netlify](https://www.netlify.com/blog/2016/09/29/a-step-by-step-guide-deploying-on-netlify/)) by following the deployment instructions for SvelteKit or by clicking the *button below*:
+
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/git/external?repository-url=https%3A%2F%2Fgithub.com%2FGuliveer%2FBingo-SvelteKit%2Ftree%2Fmain)

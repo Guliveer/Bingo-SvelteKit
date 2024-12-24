@@ -6,7 +6,13 @@
     let size = gameConfig.size; // Rozmiar planszy
     let shuffled = [...gameConfig.phrases].sort(() => Math.random() - 0.5).slice(0, size * size); // Losowe rozmieszczenie fraz na planszy
     let marked = new Set(); // Zaznaczone pola
+    let savedGames = [];
     let hasWon = false;
+
+    // Wczytaj zapisane gry z localStorage
+    onMount(() => {
+        savedGames = JSON.parse(localStorage.getItem('savedGames')) || [];
+    });
 
     function toggleMark(index) {
         if (marked.has(index)) {
@@ -33,33 +39,28 @@
         // Sprawdzanie przekątnych
         const diag1 = Array.from({ length: size }, (_, i) => i * size + i);
         const diag2 = Array.from({ length: size }, (_, i) => (i + 1) * size - (i + 1));
-        if (checkLine(diag1) || checkLine(diag2)) {
-            hasWon = true;
-        } else {
-            hasWon = false;
-        }
+        hasWon = (checkLine(diag1) || checkLine(diag2));
     }
 
     function saveConfig() {
-        const savedConfigs = JSON.parse(localStorage.getItem('bingoConfigs')) || [];
+        const curConfig = {
+            id: gameConfig.id,
+            name: gameConfig.name,
+            size: gameConfig.size,
+            phrases: gameConfig.phrases
+        };
 
-        // const updatedConfigs contains an array (key: id, value: data) of urls for each game configuration,
-        // since data param (in url) is what holds game configuration (phrases and game size)
-        const updatedConfigs = savedConfigs.map((config) => {
-            if (config.id === gameConfig.id) {
-                return { id: config.id, name: config.id, data: encodeGameConfig(size, gameConfig.phrases) };
-            }
-            return config;
-        });
-        localStorage.setItem('bingoConfigs', JSON.stringify(updatedConfigs));
-        alert('Game configuration saved!');
+        savedGames = [...savedGames, curConfig];
+        localStorage.setItem('savedGames', JSON.stringify(savedGames));
+
+        alert('Configuration saved!');
     }
 
-    onMount(() => {
-        // input shortened link to textarea, by using shortenURL() function
-        const shortenedLink = document.getElementById('shortened-link');
-        shortenedLink.value = shortenURL(window.location.href);
-    });
+    function copyLink() {
+        // copy current window URL to clipboard
+        navigator.clipboard.writeText(window.location.href);
+        alert('Link copied to clipboard!');
+    }
 </script>
 
 <div class="grid" style="grid-template-columns: repeat({size}, 1fr);">
@@ -79,8 +80,7 @@
 <div class="actions">
     <button on:click={saveConfig}>Save Configuration</button>
     <button on:click={() => (window.location.href = '/')}>Go to Main Menu</button>
-    <textarea id="shortened-link" readonly></textarea>
-    <button on:click={() => navigator.clipboard.writeText(document.getElementById('shortened-link').value)}>Copy Link</button>
+    <button on:click={copyLink}>Copy Link</button>
 </div>
 
 <style>
