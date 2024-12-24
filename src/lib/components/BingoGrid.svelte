@@ -1,63 +1,65 @@
 <script>
+    import {onMount} from "svelte";
+
     export let gameConfig;
 
-    let shuffled = [];
-    let marked = new Set(); // Zestaw indeksów zaznaczonych pól
     let size = gameConfig.size; // Rozmiar planszy
+    let shuffled = [...gameConfig.phrases].sort(() => Math.random() - 0.5).slice(0, size * size); // Losowe rozmieszczenie fraz na planszy
+    let marked = new Set(); // Zaznaczone pola
     let hasWon = false;
-
-    // Losowe rozmieszczenie fraz na planszy
-    $: shuffled = [...gameConfig.phrases]
-        .sort(() => Math.random() - 0.5)
-        .slice(0, size * size);
 
     function toggleMark(index) {
         if (marked.has(index)) {
-            marked.delete(index); // Odznacz pole
+            marked.delete(index);
         } else {
-            marked.add(index); // Zaznacz pole
+            marked.add(index);
         }
-        marked = new Set(marked); // Ustawienie nowego Set (dla reaktywności)
-        checkWin(); // Sprawdzaj warunki wygranej po każdej zmianie
+        marked = new Set(marked);
+        checkWin();
     }
 
     function checkWin() {
-        // Tworzymy tablicę z zaznaczonymi indeksami
-        const markedArray = Array.from(marked);
-
-        // Sprawdź wiersze
-        for (let row = 0; row < size; row++) {
-            const rowIndices = Array.from({ length: size }, (_, i) => row * size + i);
-            if (rowIndices.every((idx) => marked.has(idx))) {
+        // Sprawdzanie warunków wygranej (wiersze, kolumny, przekątne)
+        const checkLine = (indices) => indices.every((idx) => marked.has(idx));
+        for (let i = 0; i < size; i++) {
+            if (
+                checkLine(Array.from({ length: size }, (_, j) => i * size + j)) || // Wiersz
+                checkLine(Array.from({ length: size }, (_, j) => j * size + i))   // Kolumna
+            ) {
                 hasWon = true;
                 return;
             }
         }
-
-        // Sprawdź kolumny
-        for (let col = 0; col < size; col++) {
-            const colIndices = Array.from({ length: size }, (_, i) => col + i * size);
-            if (colIndices.every((idx) => marked.has(idx))) {
-                hasWon = true;
-                return;
-            }
-        }
-
-        // Sprawdź przekątne
-        const diagonal1 = Array.from({ length: size }, (_, i) => i * size + i);
-        if (diagonal1.every((idx) => marked.has(idx))) {
+        // Sprawdzanie przekątnych
+        const diag1 = Array.from({ length: size }, (_, i) => i * size + i);
+        const diag2 = Array.from({ length: size }, (_, i) => (i + 1) * size - (i + 1));
+        if (checkLine(diag1) || checkLine(diag2)) {
             hasWon = true;
-            return;
+        } else {
+            hasWon = false;
         }
-
-        const diagonal2 = Array.from({ length: size }, (_, i) => (i + 1) * size - (i + 1));
-        if (diagonal2.every((idx) => marked.has(idx))) {
-            hasWon = true;
-            return;
-        }
-
-        hasWon = false; // Jeśli nie ma wygranej
     }
+
+    function saveConfig() {
+        const savedConfigs = JSON.parse(localStorage.getItem('bingoConfigs')) || [];
+
+        // const updatedConfigs contains an array (key: id, value: data) of urls for each game configuration,
+        // since data param (in url) is what holds game configuration (phrases and game size)
+        const updatedConfigs = savedConfigs.map((config) => {
+            if (config.id === gameConfig.id) {
+                return { id: config.id, name: config.id, data: encodeGameConfig(size, gameConfig.phrases) };
+            }
+            return config;
+        });
+        localStorage.setItem('bingoConfigs', JSON.stringify(updatedConfigs));
+        alert('Game configuration saved!');
+    }
+
+    onMount(() => {
+        // input shortened link to textarea, by using shortenURL() function
+        const shortenedLink = document.getElementById('shortened-link');
+        shortenedLink.value = shortenURL(window.location.href);
+    });
 </script>
 
 <div class="grid" style="grid-template-columns: repeat({size}, 1fr);">
@@ -71,8 +73,15 @@
 </div>
 
 {#if hasWon}
-    <p class="win-message">Gratulacje! Wygrałeś!</p>
+    <p class="win-message">You won!</p>
 {/if}
+
+<div class="actions">
+    <button on:click={saveConfig}>Save Configuration</button>
+    <button on:click={() => (window.location.href = '/')}>Go to Main Menu</button>
+    <textarea id="shortened-link" readonly></textarea>
+    <button on:click={() => navigator.clipboard.writeText(document.getElementById('shortened-link').value)}>Copy Link</button>
+</div>
 
 <style>
     .grid {
@@ -111,5 +120,27 @@
         color: #198754;
         font-size: 1.5rem;
         font-weight: bold;
+    }
+
+    .actions {
+        display: flex;
+        justify-content: center;
+        gap: 10px;
+        margin-top: 20px;
+    }
+
+    .actions button {
+        padding: 10px 20px;
+        font-size: 1rem;
+        background-color: #0d6efd;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: background-color 0.3s;
+    }
+
+    .actions button:hover {
+        background-color: #0b5ed7;
     }
 </style>

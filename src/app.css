@@ -88,7 +88,12 @@ ul li {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    max-width: 500px;
+    max-width: 600px;
+}
+
+ul li .actions {
+    display: flex;
+    gap: 10px;
 }
 
 ul li a {

@@ -13,18 +13,20 @@
             try {
                 gameConfig = decodeGameConfig(encodedData); // Dekoduj konfigurację gry
             } catch (e) {
-                console.error('Błąd dekodowania danych gry:', e);
+                console.error('Error encoding game data:', e);
                 dataError = true;
             }
         } else {
             dataError = true;
         }
+
+        console.log(gameConfig);
     }
 </script>
 
 {#if dataError}
-    <p>Błąd: Nie można załadować danych gry.</p>
+    <p>Error loading game data.</p>
 {:else}
-    <h1>Bingo: {gameConfig.size}x{gameConfig.size}</h1>
+    <h1>{gameConfig.name}</h1>
     <BingoGrid {gameConfig} />
 {/if}
