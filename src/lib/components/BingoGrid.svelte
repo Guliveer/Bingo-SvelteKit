@@ -7,11 +7,34 @@
     let shuffled = [...gameConfig.phrases].sort(() => Math.random() - 0.5).slice(0, size * size); // Randomly shuffled phrases
     let marked = new Set(); // Marked cells
     let savedGames = [];
+    let recentGames = [];
     let hasWon = false;
 
     // Load saved games from localStorage
     onMount(() => {
-        savedGames = JSON.parse(localStorage.getItem('savedGames')) || [];
+        savedGames = JSON.parse(localStorage.getItem('savedGames')) || []; // Load saved games
+
+        // add current game (entire URL) to recentGames
+        // if not already there, if exists, move it to the beginning
+        const gameURL = window.location.href;
+
+        recentGames = JSON.parse(localStorage.getItem('recentGames')) || [];
+        if (recentGames.includes(gameURL)) {
+            recentGames = recentGames.filter((url) => url !== gameURL);
+        }
+
+        if (!recentGames.includes(gameURL)){
+            recentGames = [gameURL, ...recentGames];
+        }
+
+        // keep only 10 most recent games (if more, remove the oldest)
+        if (recentGames.length > 10) {
+            // remove all occurrences after index 9
+            recentGames = recentGames.slice(0, 10);
+        }
+
+        // save recentGames to localStorage
+        localStorage.setItem('recentGames', JSON.stringify(recentGames));
     });
 
     function toggleMark(index) {
@@ -29,8 +52,8 @@
         const checkLine = (indices) => indices.every((idx) => marked.has(idx));
         for (let i = 0; i < size; i++) {
             if (
-                checkLine(Array.from({ length: size }, (_, j) => i * size + j)) || // Wiersz
-                checkLine(Array.from({ length: size }, (_, j) => j * size + i))   // Kolumna
+                checkLine(Array.from({ length: size }, (_, j) => i * size + j)) || // Row
+                checkLine(Array.from({ length: size }, (_, j) => j * size + i))   // Column
             ) {
                 hasWon = true;
                 return;
@@ -39,7 +62,7 @@
         // Check diagonals
         const diag1 = Array.from({ length: size }, (_, i) => i * size + i);
         const diag2 = Array.from({ length: size }, (_, i) => (i + 1) * size - (i + 1));
-        hasWon = (checkLine(diag1) || checkLine(diag2)); // If any diagonal is marked - hasWon = true
+        hasWon = (checkLine(diag1) || checkLine(diag2)); // If any diagonal is marked -> hasWon = true
     }
 
     function saveConfig() {
@@ -78,7 +101,7 @@
 {/if}
 
 <div class="actions">
-    <button on:click={saveConfig}>Save Configuration</button>
+<!--    <button on:click={saveConfig}>Save Configuration</button>--> <!--! Removed due to technical difficulties -->
     <button on:click={() => (window.location.href = '/')}>Go to Main Menu</button>
     <button on:click={copyLink}>Copy Link</button>
 </div>

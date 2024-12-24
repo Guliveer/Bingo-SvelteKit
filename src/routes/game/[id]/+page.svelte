@@ -19,8 +19,6 @@
         } else {
             dataError = true;
         }
-
-        // console.log(gameConfig);
     }
 </script>
 

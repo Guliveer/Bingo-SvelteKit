@@ -1,16 +1,34 @@
 <script>
     import { goto } from '$app/navigation';
-    import { encodeGameConfig } from '$lib/utils';
+    import { encodeGameConfig, decodeGameConfig } from '$lib/utils';
     import { onMount } from 'svelte';
 
     let id = crypto.randomUUID();
     let newGame = { name: id, size: 3, phrases: '' }; // Each phrase in a new line
     let savedGames = [];
+    let recentGames = [];
+    let recentGamesData = [];
     let errorMessage = '';
 
     // Load saved games from localStorage
     onMount(() => {
         savedGames = JSON.parse(localStorage.getItem('savedGames')) || [];
+        recentGames = JSON.parse(localStorage.getItem('recentGames')) || [];
+
+        // decode recentGames 'data' param using decodeGameConfig to recentGamesData (array)
+        // array scheme: {name: string, size: number, phrases: string[]}
+        recentGamesData = recentGames.map((url) => {
+            const params = new URLSearchParams(url.split('?')[1]);
+            const encodedData = params.get('data');
+            if (encodedData) {
+                try {
+                    return decodeGameConfig(encodedData);
+                } catch (e) {
+                    console.error('Error decoding game data:', e);
+                }
+            }
+            return null;
+        }).filter((game) => game !== null);
     });
 
     function createGame() {
@@ -46,6 +64,12 @@
         alert('Link copied to clipboard!');
     }
 
+    function removeRecentGame(index) {
+        recentGames = recentGames.filter((_, i) => i !== index);
+        recentGamesData = recentGamesData.filter((_, i) => i !== index);
+        localStorage.setItem('recentGames', JSON.stringify(recentGames));
+    }
+
     function deleteGame(id) {
         if (!confirm('Are you sure you want to delete this game?')) { // Confirm before deleting
             return;
@@ -59,10 +83,8 @@
     }
 </script>
 
-<h1>Main Menu</h1>
-
+<h1>Create new Bingo</h1>
 <section>
-    <h2>New game</h2>
     <form on:submit|preventDefault={createGame}>
         <label>
             Board size:
@@ -96,6 +118,27 @@
                     <button on:click={() => deleteGame(game.id)}>Delete</button>
                     </div>
                 </li>
+            {/each}
+        </ul>
+</section>
+{/if}
+
+{#if recentGames.length !== 0}
+<section>
+    <h2>Recent games</h2>
+        <ul>
+            <!-- List as [name](url)-->
+            {#each recentGamesData as gameData, i}
+                {#if gameData}
+                    <li>
+                        {gameData.name || gameData.id}
+                        <div class="actions">
+                            <button on:click={() => goto(recentGames[i])}>Play Again</button>
+                            <button on:click={() => copyLink(gameData)}>Copy Link</button>
+                            <button on:click={() => removeRecentGame(i)}>Remove</button>
+                        </div>
+                    </li>
+                {/if}
             {/each}
         </ul>
 </section>
